@@ -1,13 +1,9 @@
-import 'dart:io';
-
-import 'package:commons/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:team_manager/screens/player_screen.dart';
 import 'package:team_manager/screens/team.dart';
 import 'package:team_manager/screens/team_screen.dart';
 import 'package:team_manager/screens/player.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class MainApp extends StatefulWidget {
   MainApp({this.selectedIndex});
@@ -19,30 +15,6 @@ class MainApp extends StatefulWidget {
 
 class _MainApp extends State<MainApp> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-
-  Permission _permission = Permission.contacts;
-  PermissionStatus _permissionStatus = PermissionStatus.undetermined;
-
-  void getPermission() async {
-    _permissionStatus = await _permission.status;
-    if (_permissionStatus == PermissionStatus.denied ||
-        _permissionStatus == PermissionStatus.undetermined) {
-      await _permission.request();
-      //getPermission();
-    } else if (_permissionStatus == PermissionStatus.restricted) {
-      warningDialog(context,
-          "It is not possible to use the application without access to contacts, access the settings on your mobile phone and allow reading contacts",
-          neutralText: "Close",
-          title: "Permission",
-          neutralAction: () => exit(0));
-    } else if (_permissionStatus == PermissionStatus.permanentlyDenied) {
-      warningDialog(context,
-          "It is not possible to use the application without access to contacts, access the settings on your mobile phone and allow reading contacts",
-          neutralText: "Close",
-          title: "Permission",
-          negativeAction: () => exit(0));
-    }
-  }
 
   FloatingActionButton getFloatingActionButton(BuildContext context) {
     if (_selectedIndex == 0) {
@@ -84,7 +56,7 @@ class _MainApp extends State<MainApp> with SingleTickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vincent Sports Team Manager'),
+        title: const Text("I'm the Captain"),
         automaticallyImplyLeading: false,
         actions: <Widget>[
           //Padding(

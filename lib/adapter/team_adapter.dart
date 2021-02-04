@@ -16,6 +16,7 @@ class TeamAdapter {
   }
 
   Future<void> deleteTeam(TeamEntity team) async {
+    await db.deleteTeamFromPlayerTeams(team.id);
     await db.deleteTeam(team.id);
     return null;
   }

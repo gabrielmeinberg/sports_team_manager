@@ -129,6 +129,18 @@ class TeamManagerDB {
         [playerId, teamId]);
   }
 
+  Future<int> deletePlayerFromTeams(int playerId) async {
+    Database _db = await createDB();
+    return await _db
+        .rawDelete('DELETE FROM playerteam WHERE player_id= ?', [playerId]);
+  }
+
+  Future<int> deleteTeamFromPlayerTeams(int teamId) async {
+    Database _db = await createDB();
+    return await _db
+        .rawDelete('DELETE FROM playerteam WHERE team_id= ?', [teamId]);
+  }
+
   Future<List<Map>> getPlayerTeam(int teamId) async {
     Database _db = await createDB();
     var result = await _db

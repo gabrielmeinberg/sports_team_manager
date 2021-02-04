@@ -7,6 +7,7 @@ import 'package:team_manager/adapter/team_adapter.dart';
 import 'package:team_manager/models/player.dart';
 import 'package:team_manager/models/team.dart';
 import 'package:team_manager/providers/app_provider.dart';
+import 'package:team_manager/screens/main_user.dart';
 
 class TeamShow extends StatefulWidget {
   TeamShow({Key key, this.teamEntity}) : super(key: key);
@@ -34,6 +35,7 @@ class _TeamShow extends State<TeamShow> {
     waitDialog(context, message: 'Saving...');
     await TeamAdapter().updateTeam(widget.teamEntity, _name.text).then((value) {
       Provider.of<AppProvider>(context, listen: false).getTeams();
+      Provider.of<AppProvider>(context, listen: false).getPlayers();
       Navigator.pop(context);
       successDialog(context, 'Successfully updated');
     });
@@ -66,6 +68,7 @@ class _TeamShow extends State<TeamShow> {
           });
         });
         Provider.of<AppProvider>(context, listen: false).getTeams();
+        Provider.of<AppProvider>(context, listen: false).getPlayers();
         successDialog(context, 'Player successfully added');
       });
     });
@@ -80,6 +83,7 @@ class _TeamShow extends State<TeamShow> {
           .deletePlayerTeam(widget.teamEntity, playerSelected)
           .then((value) {
         Provider.of<AppProvider>(context, listen: false).getTeams();
+        Provider.of<AppProvider>(context, listen: false).getPlayers();
 
         setState(() {
           Future.wait([PlayerTeamAdapter().getPlayersByTeam(widget.teamEntity)])
@@ -95,6 +99,21 @@ class _TeamShow extends State<TeamShow> {
     });
   }
 
+  Future<void> deleteTeam(BuildContext context) async {
+    await confirmationDialog(context, "Do you Confirm to delete the Team?",
+        positiveText: "Remove", positiveAction: () {
+      TeamAdapter().deleteTeam(widget.teamEntity).then((value) {
+        Provider.of<AppProvider>(context, listen: false).getTeams();
+        Provider.of<AppProvider>(context, listen: false).getPlayers();
+      });
+    });
+
+    await successDialog(context, 'Successfully Team Deleted');
+
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MainApp()));
+  }
+
   @override
   Widget build(BuildContext context) {
     listPlayersEntity =
@@ -102,6 +121,14 @@ class _TeamShow extends State<TeamShow> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Team"),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () => deleteTeam(context),
+                  child: Icon(Icons.delete_forever),
+                )),
+          ],
         ),
         body: Column(children: [
           ListView(

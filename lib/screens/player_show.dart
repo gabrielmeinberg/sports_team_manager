@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:team_manager/adapter/player_adapter.dart';
 import 'package:team_manager/models/player.dart';
 import 'package:team_manager/providers/app_provider.dart';
+import 'package:team_manager/screens/main_user.dart';
 
 class PlayerShow extends StatefulWidget {
   PlayerShow({Key key, this.playerEntity}) : super(key: key);
@@ -36,11 +37,34 @@ class _PlayerShow extends State<PlayerShow> {
     });
   }
 
+  Future<void> deletePlayerTeam(BuildContext context) async {
+    await confirmationDialog(context, "Do you Confirm to delete the Player?",
+        positiveText: "Remove", positiveAction: () {
+      PlayerAdapter().deletePlayer(widget.playerEntity).then((value) {
+        Provider.of<AppProvider>(context, listen: false).getTeams();
+        Provider.of<AppProvider>(context, listen: false).getPlayers();
+      });
+    });
+
+    await successDialog(context, 'Successfully Player Deleted');
+
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MainApp()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("Player"),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () => deletePlayerTeam(context),
+                  child: Icon(Icons.delete_forever),
+                )),
+          ],
         ),
         body: Column(children: [
           ListView(
